@@ -1,0 +1,104 @@
+{% extends 'classifier/base.html' %}
+{% load static %}
+
+{% block title %}About - Smart Waste Classifier{% endblock %}
+
+{% block content %}
+<div class="hero-small">
+    <div class="container">
+        <h2>About Our Project</h2>
+    </div>
+</div>
+
+<div class="container about-content">
+    <section class="about-section">
+        <h3>Project Overview</h3>
+        <p>
+            The Smart Waste Classifier is an AI-powered web application designed to help users 
+            properly identify and dispose of waste materials. Using advanced computer vision 
+            and deep learning technology, our system can automatically classify waste into 
+            9 different categories with high accuracy.
+        </p>
+        <p>
+            Our mission is to make recycling easier and more accessible for everyone, contributing 
+            to a cleaner and more sustainable environment. By providing instant classification 
+            and detailed disposal information, we empower users to make informed decisions about 
+            waste management.
+        </p>
+    </section>
+
+    <!-- <section class="about-section">
+        <h3>Technology</h3>
+        <div class="tech-grid">
+            <div class="tech-item">
+                <h4>🧠 Deep Learning</h4>
+                <p>Powered by ResNet50 architecture trained on thousands of waste images</p>
+            </div>
+            <div class="tech-item">
+                <h4>🎯 High Accuracy</h4>
+                <p>Achieves excellent classification performance across 9 waste categories</p>
+            </div>
+            <div class="tech-item">
+                <h4>⚡ Real-time Processing</h4>
+                <p>Instant classification results with detailed disposal information</p>
+            </div>
+            <div class="tech-item">
+                <h4>📱 User Friendly</h4>
+                <p>Simple interface supporting both image upload and camera capture</p>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- <section class="about-section">
+        <h3>Waste Categories</h3>
+        <div class="categories-grid">
+            <div class="category-badge">♻️ E-waste</div>
+            <div class="category-badge">🚗 Automobile</div>
+            <div class="category-badge">🔋 Battery</div>
+            <div class="category-badge">🥃 Glass</div>
+            <div class="category-badge">💡 Light Bulbs</div>
+            <div class="category-badge">🔩 Metal</div>
+            <div class="category-badge">🌱 Organic</div>
+            <div class="category-badge">📄 Paper</div>
+            <div class="category-badge">🥤 Plastic</div>
+        </div>
+    </section> -->
+
+    <section class="about-section">
+        <h3>Our Team</h3>
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="member-image">
+                    <img src="{% static 'classifier/images/1.jpeg' %}" alt="Developer 1" onerror="this.src='https://via.placeholder.com/200x200?text=Developer+1'">
+                </div>
+                <h4>Yangchen Dema</h4>
+                <p class="role">Lead AI Engineer</p>
+                <p>Specialized in computer vision and deep learning. Responsible for model training and optimization.</p>
+            </div>
+            <div class="team-member">
+                <div class="member-image">
+                    <img src="{% static 'classifier/images/2.jpeg' %}" alt="Developer 2" onerror="this.src='https://via.placeholder.com/200x200?text=Developer+2'">
+                </div>
+                <h4>Dechen Pelden</h4>
+                <p class="role">Full Stack Developer</p>
+                <p>Expert in web development and system architecture. Built the web application and user interface.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- <section class="about-section">
+        <h3>Environmental Impact</h3>
+        <p>
+            Proper waste classification and disposal is crucial for environmental protection. 
+            By helping users correctly identify waste types, we contribute to:
+        </p>
+        <ul class="impact-list">
+            <li>🌍 Reduced landfill waste and environmental pollution</li>
+            <li>♻️ Increased recycling rates and resource conservation</li>
+            <li>💚 Protection of ecosystems and wildlife</li>
+            <li>🌱 Lower carbon footprint through proper waste management</li>
+            <li>🔄 Promotion of circular economy principles</li>
+        </ul>
+    </section> -->
+</div>
+{% endblock %}

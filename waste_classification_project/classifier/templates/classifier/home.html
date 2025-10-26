@@ -1,0 +1,207 @@
+{% extends 'classifier/base.html' %}
+{% load static %}
+
+{% block title %}Home - Smart Waste Classifier{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <div class="container">
+        <h2>Classify Your Waste Instantly</h2>
+        <p>Upload an image or use your camera to identify waste types and learn proper disposal methods</p>
+    </div>
+</div>
+
+<div class="container main-content">
+    <div class="classifier-section">
+        <div class="upload-options">
+            <div class="option-card" id="upload-card">
+                <div class="icon">📁</div>
+                <h3>Upload Image</h3>
+                <p>Select an image from your device</p>
+                <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                <button class="btn btn-primary" onclick="document.getElementById('image-upload').click()">
+                    Choose File
+                </button>
+            </div>
+
+            <div class="option-card" id="camera-card">
+                <div class="icon">📷</div>
+                <h3>Use Camera</h3>
+                <p>Take a photo directly</p>
+                <button class="btn btn-primary" id="camera-btn">
+                    Open Camera
+                </button>
+            </div>
+        </div>
+
+        <div id="preview-section" style="display: none;">
+            <div class="preview-container">
+                <h3>Preview</h3>
+                <img id="preview-image" src="" alt="Preview">
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Classifying waste...</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="camera-section" style="display: none;">
+            <div class="camera-container">
+                <h3>Camera</h3>
+                <video id="camera-video" autoplay playsinline></video>
+                <canvas id="camera-canvas" style="display: none;"></canvas>
+                <div class="camera-controls">
+                    <button class="btn btn-primary" id="capture-btn">Capture Photo</button>
+                    <button class="btn btn-secondary" id="close-camera-btn">Close Camera</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="info-section">
+        <h2>How It Works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h4>Choose Method</h4>
+                <p>Upload an image or use your camera</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h4>AI Analysis</h4>
+                <p>Our model identifies the waste type</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h4>Get Results</h4>
+                <p>Learn proper disposal methods</p>
+            </div>
+        </div>
+    </div> -->
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const imageUpload = document.getElementById('image-upload');
+    const previewSection = document.getElementById('preview-section');
+    const previewImage = document.getElementById('preview-image');
+    const loading = document.getElementById('loading');
+    const cameraBtn = document.getElementById('camera-btn');
+    const cameraSection = document.getElementById('camera-section');
+    const cameraVideo = document.getElementById('camera-video');
+    const cameraCanvas = document.getElementById('camera-canvas');
+    const captureBtn = document.getElementById('capture-btn');
+    const closeCameraBtn = document.getElementById('close-camera-btn');
+
+    let stream = null;
+
+    // Handle image upload
+    imageUpload.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                previewImage.src = event.target.result;
+                previewSection.style.display = 'block';
+                cameraSection.style.display = 'none';
+                loading.style.display = 'flex';
+                
+                // Upload and classify
+                classifyImage(file);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Handle camera
+    cameraBtn.addEventListener('click', async function() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: 'environment' } 
+            });
+            cameraVideo.srcObject = stream;
+            cameraSection.style.display = 'block';
+            previewSection.style.display = 'none';
+        } catch (error) {
+            alert('Unable to access camera: ' + error.message);
+        }
+    });
+
+    captureBtn.addEventListener('click', function() {
+        const context = cameraCanvas.getContext('2d');
+        cameraCanvas.width = cameraVideo.videoWidth;
+        cameraCanvas.height = cameraVideo.videoHeight;
+        context.drawImage(cameraVideo, 0, 0);
+        
+        const imageData = cameraCanvas.toDataURL('image/jpeg');
+        previewImage.src = imageData;
+        
+        // Stop camera
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+        
+        cameraSection.style.display = 'none';
+        previewSection.style.display = 'block';
+        loading.style.display = 'flex';
+        
+        // Classify captured image
+        classifyCameraImage(imageData);
+    });
+
+    closeCameraBtn.addEventListener('click', function() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+        cameraSection.style.display = 'none';
+    });
+
+    function classifyImage(file) {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        fetch('/classify/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect_url;
+            } else {
+                alert('Classification failed: ' + data.error);
+                loading.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+            loading.style.display = 'none';
+        });
+    }
+
+    function classifyCameraImage(imageData) {
+        const formData = new FormData();
+        formData.append('image_data', imageData);
+
+        fetch('/classify/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect_url;
+            } else {
+                alert('Classification failed: ' + data.error);
+                loading.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+            loading.style.display = 'none';
+        });
+    }
+</script>
+{% endblock %}
