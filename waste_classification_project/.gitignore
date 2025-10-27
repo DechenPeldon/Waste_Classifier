@@ -1,3 +1,45 @@
 node_modules/
 .venv/
 venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Django / local data
+db.sqlite3
+*.sqlite3
+*.sqlite
+
+# Media and model files (large, generated or user uploads)
+media/
+uploads/
+media/models/
+*.h5
+
+# Environment
+.env
+.venv/
+env/
+venv/
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+
+# Build / packaging
+dist/
+build/
+*.egg-info/
+
+# Logs
+*.log
