@@ -62,6 +62,8 @@ Thumbs.db
 media/uploads/
 static/
 !*/static/classifier/  # Keep the classifier static files
+!media/models/  # Keep the ML model files
+!media/models/*.h5  # Explicitly track .h5 model files
 
 # Environment
 .env
