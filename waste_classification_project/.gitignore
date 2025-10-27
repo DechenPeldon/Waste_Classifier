@@ -15,9 +15,19 @@ develop-eggs/
 .installed.cfg
 lib/
 lib64/
-.venv/
+
+# Virtual Environment - strict rules
 venv/
+venv*/
+.venv/
+.venv*/
 env/
+ENV/
+.env/
+.python-version
+.env
+virtualenv/
+**/site-packages/
 
 # Django
 *.log
