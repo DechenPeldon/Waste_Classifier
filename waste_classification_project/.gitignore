@@ -1,42 +1,75 @@
-node_modules/
+# Python
+*.py[cod]
+__pycache__/
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+bin/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
 .venv/
 venv/
+env/
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
+# Django
+*.log
+*.pot
 *.pyc
-
-# Django / local data
 db.sqlite3
-*.sqlite3
-*.sqlite
+media/uploads/
+local_settings.py
 
-# Media and model files (large, generated or user uploads)
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
 
+# Machine Learning
+*.h5
+*.hdf5
+*.pkl
+*.model
+*.joblib
+*.pt
+
+# Node
+node_modules/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Project specific
+media/uploads/
+static/
+!*/static/classifier/  # Keep the classifier static files
 
 # Environment
 .env
-.venv/
+.venv
 env/
 venv/
+ENV/
 
-# Editor/IDE
-.vscode/
-.idea/
-
-# macOS
-.DS_Store
-
-# Testing / coverage
-.pytest_cache/
-.coverage
-
-# Build / packaging
-dist/
-build/
-*.egg-info/
-
-# Logs
-*.log
+# Dependencies
+requirements.txt.lock
+pip-log.txt
