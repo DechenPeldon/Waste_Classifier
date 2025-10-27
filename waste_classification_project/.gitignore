@@ -14,10 +14,7 @@ db.sqlite3
 *.sqlite
 
 # Media and model files (large, generated or user uploads)
-media/
-uploads/
-media/models/
-*.h5
+
 
 # Environment
 .env
