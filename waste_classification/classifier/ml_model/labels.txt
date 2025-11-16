@@ -1,0 +1,10 @@
+0 automobile wastes
+1 battery waste
+2 E-waste
+3 glass waste
+4 light bulbs
+5 metal waste
+6 organic waste
+7 paper waste
+8 plastic waste
+9 unknown

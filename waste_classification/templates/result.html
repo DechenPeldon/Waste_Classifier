@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Result - {{ result.predicted_class }}{% endblock %}
+
+{% block content %}
+<div class="result-page">
+    <div class="container">
+        <div class="result-header">
+            <h1 class="result-title">Classification Result</h1>
+            <a href="{% url 'classifier:home' %}" class="btn-secondary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Classify Another
+            </a>
+        </div>
+
+        <div class="result-content">
+            <div class="result-image-section">
+                <div class="result-image-container">
+                    <img src="{{ result.image.url }}" alt="Classified waste" class="result-image">
+                    <div class="image-badge">
+                        {% if result.is_camera %}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                        Camera
+                        {% else %}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        Upload
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="classification-badge">
+                    <div class="badge-content">
+                        <span class="badge-label">Detected Type</span>
+                        <span class="badge-value">{{ result.predicted_class|title }}</span>
+                    </div>
+                    <div class="confidence-meter">
+                        <div class="confidence-label">
+                            <span>Confidence</span>
+                            <span class="confidence-value">{{ result.confidence|floatformat:1 }}%</span>
+                        </div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width: {{ result.confidence }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-details-section">
+                <div class="detail-card">
+                    <div class="card-header">
+                        <h2>
+                            <span class="icon">ℹ️</span>
+                            Description
+                        </h2>
+                    </div>
+                    <p>{{ waste_info.description }}</p>
+                </div>
+
+                <div class="detail-card">
+                    <div class="card-header">
+                        <h2>
+                            <span class="icon">📦</span>
+                            Examples
+                        </h2>
+                    </div>
+                    <p>{{ waste_info.examples }}</p>
+                </div>
+
+                <div class="detail-card disposal-card">
+                    <div class="card-header">
+                        <h2>
+                            <span class="icon">♻️</span>
+                            Disposal Instructions
+                        </h2>
+                    </div>
+                    <p>{{ waste_info.disposal }}</p>
+                    {% if waste_info.recyclable %}
+                    <div class="recyclable-badge">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                        Recyclable Material
+                    </div>
+                    {% else %}
+                    <div class="not-recyclable-badge">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                        Requires Special Handling
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="detail-card tips-card">
+                    <div class="card-header">
+                        <h2>
+                            <span class="icon">💡</span>
+                            Quick Tips
+                        </h2>
+                    </div>
+                    <ul class="tips-list">
+                        {% if result.predicted_class == 'E-waste' %}
+                        <li>Remove batteries before recycling electronic devices</li>
+                        <li>Check for manufacturer take-back programs</li>
+                        <li>Never dispose of e-waste in regular trash bins</li>
+                        {% elif result.predicted_class == 'battery' %}
+                        <li>Store used batteries in a cool, dry place</li>
+                        <li>Tape battery terminals before disposal</li>
+                        <li>Look for battery recycling drop-off locations</li>
+                        {% elif result.predicted_class == 'plastic' %}
+                        <li>Check the recycling number on the bottom</li>
+                        <li>Rinse containers before recycling</li>
+                        <li>Remove caps if your facility requires it</li>
+                        {% elif result.predicted_class == 'paper' %}
+                        <li>Keep paper dry and clean for recycling</li>
+                        <li>Remove any plastic windows or staples</li>
+                        <li>Flatten cardboard boxes to save space</li>
+                        {% elif result.predicted_class == 'glass' %}
+                        <li>Rinse glass containers before recycling</li>
+                        <li>Remove lids and caps</li>
+                        <li>Separate by color if required locally</li>
+                        {% elif result.predicted_class == 'metal' %}
+                        <li>Clean metal items before recycling</li>
+                        <li>Aluminum and steel are highly recyclable</li>
+                        <li>Consider scrap yards for larger metal items</li>
+                        {% elif result.predicted_class == 'organic' %}
+                        <li>Start a compost bin at home</li>
+                        <li>Avoid composting meat and dairy products</li>
+                        <li>Compost enriches soil and reduces waste</li>
+                        {% elif result.predicted_class == 'light-bulbs' %}
+                        <li>Never break light bulbs during disposal</li>
+                        <li>CFL bulbs contain mercury - handle carefully</li>
+                        <li>Many hardware stores accept old bulbs</li>
+                        {% elif result.predicted_class == 'automobile' %}
+                        <li>Contact auto recyclers for proper disposal</li>
+                        <li>Some parts can be refurbished or resold</li>
+                        <li>Drain all fluids before scrapping</li>
+                        {% else %}
+                        <li>When in doubt, contact local waste management</li>
+                        <li>Never contaminate recycling bins</li>
+                        <li>Research proper disposal methods online</li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="{% url 'classifier:home' %}" class="btn-primary">
+                        Classify Another Item
+                    </a>
+                    <button onclick="window.print()" class="btn-secondary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                            <rect x="6" y="14" width="12" height="8"></rect>
+                        </svg>
+                        Print Result
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@media print {
+    nav, footer, .action-buttons { display: none; }
+    .result-content { display: block; }
+    .result-image-section, .result-details-section { 
+        width: 100%; 
+        margin-bottom: 20px;
+    }
+}
+</style>
+{% endblock %}

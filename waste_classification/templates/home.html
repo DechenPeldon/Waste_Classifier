@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - Smart Waste Classifier{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Smart Waste Classification</h1>
+        <p class="hero-description">Upload an image or use your camera to instantly identify waste types and learn proper disposal methods</p>
+    </div>
+</div>
+
+<div class="upload-section">
+    <div class="container">
+        <h2 class="section-title">How would you like to classify waste?</h2>
+        
+        <div class="upload-options">
+            <!-- Image Upload Option -->
+            <div class="upload-card" id="upload-card">
+                <div class="card-icon">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                </div>
+                <h3>Upload Image</h3>
+                <p>Select an image from your device</p>
+                <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                <button class="btn-primary" onclick="document.getElementById('imageInput').click()">
+                    Choose File
+                </button>
+            </div>
+
+            <!-- Camera Option -->
+            <div class="upload-card" id="camera-card">
+                <div class="card-icon">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                </div>
+                <h3>Use Camera</h3>
+                <p>Take a photo with your camera</p>
+                <button class="btn-primary" id="openCameraBtn">
+                    Open Camera
+                </button>
+            </div>
+        </div>
+
+        <!-- Camera Modal -->
+        <div id="cameraModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Capture Waste Image</h2>
+                <div class="camera-container">
+                    <video id="video" autoplay playsinline></video>
+                    <canvas id="canvas" style="display: none;"></canvas>
+                </div>
+                <div class="camera-controls">
+                    <button class="btn-primary" id="captureBtn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        Capture Photo
+                    </button>
+                    <button class="btn-secondary" id="closeCameraBtn">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="loading-content">
+                <div class="loader"></div>
+                <p>Analyzing waste...</p>
+                <p class="loading-subtext">Our AI is identifying your waste type</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('imageInput');
+    const openCameraBtn = document.getElementById('openCameraBtn');
+    const cameraModal = document.getElementById('cameraModal');
+    const closeModalBtn = document.querySelector('.close-modal');
+    const closeCameraBtn = document.getElementById('closeCameraBtn');
+    const captureBtn = document.getElementById('captureBtn');
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    
+    let stream = null;
+
+    // Handle image upload
+    imageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            uploadImage(file);
+        }
+    });
+
+    // Open camera modal
+    openCameraBtn.addEventListener('click', async function() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: 'environment' } 
+            });
+            video.srcObject = stream;
+            cameraModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        } catch (err) {
+            alert('Unable to access camera. Please check permissions.');
+            console.error('Camera error:', err);
+        }
+    });
+
+    // Close camera modal
+    function closeCamera() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+        cameraModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    closeModalBtn.addEventListener('click', closeCamera);
+    closeCameraBtn.addEventListener('click', closeCamera);
+
+    // Capture photo
+    captureBtn.addEventListener('click', function() {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        
+        canvas.toBlob(function(blob) {
+            closeCamera();
+            uploadCameraImage(blob);
+        }, 'image/jpeg', 0.95);
+    });
+
+    // Upload image file
+    function uploadImage(file) {
+        const formData = new FormData();
+        formData.append('image', file);
+        
+        loadingOverlay.style.display = 'flex';
+        
+        fetch('{% url "classifier:classify" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect_url;
+            } else {
+                alert('Error: ' + (data.error || 'Classification failed'));
+                loadingOverlay.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred during classification');
+            loadingOverlay.style.display = 'none';
+        });
+    }
+
+    // Upload camera image
+    function uploadCameraImage(blob) {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            const base64data = reader.result;
+            
+            loadingOverlay.style.display = 'flex';
+            
+            fetch('{% url "classifier:classify" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: 'image_data=' + encodeURIComponent(base64data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    alert('Error: ' + (data.error || 'Classification failed'));
+                    loadingOverlay.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during classification');
+                loadingOverlay.style.display = 'none';
+            });
+        };
+        reader.readAsDataURL(blob);
+    }
+
+    // Get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+{% endblock %}

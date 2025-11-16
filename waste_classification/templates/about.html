@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About - Smart Waste Classifier{% endblock %}
+
+{% block content %}
+<div class="about-hero">
+    <div class="container">
+        <h1 class="page-title">About Our Project</h1>
+        <p class="page-subtitle">Leveraging AI to make recycling smarter and easier</p>
+    </div>
+</div>
+
+<div class="about-content">
+    <div class="container">
+        <!-- Mission Section -->
+        <section class="about-section">
+            <h2>Our Mission</h2>
+            <p>
+                To develop an intelligent waste-classification system that promotes efficient recycling and supports a cleaner, smarter environment.
+            </p>
+            <p>
+                Our goal is to make recycling accessible, accurate, and effortless for everyone, contributing to a more sustainable 
+                and environmentally conscious future.
+            </p>
+        </section>
+
+        <!-- How It Works -->
+        <section class="about-section">
+            <h2>How It Works</h2>
+            <div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <h3>Capture or Upload</h3>
+                    <p>Take a photo or upload an image of your waste item</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <h3>AI Analysis</h3>
+                    <p>Our ResNet50 model analyzes the image in real-time</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <h3>Get Results</h3>
+                    <p>Receive classification and detailed disposal instructions</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technology Stack -->
+        <section class="about-section">
+            <h2>Technology Stack</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <h4>🧠 Deep Learning</h4>
+                    <p>ResNet50 architecture trained on 9 waste categories</p>
+                </div>
+                <div class="tech-item">
+                    <h4>🐍 Django Framework</h4>
+                    <p>Robust backend with Python and Django</p>
+                </div>
+                <div class="tech-item">
+                    <h4>📱 Responsive Design</h4>
+                    <p>Works seamlessly across all devices</p>
+                </div>
+                <div class="tech-item">
+                    <h4>⚡ Real-time Processing</h4>
+                    <p>Instant classification results</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Waste Categories -->
+        <section class="about-section">
+            <h2>Waste Categories</h2>
+            <div class="categories-grid">
+                <div class="category-badge">E-waste</div>
+                <div class="category-badge">Automobile</div>
+                <div class="category-badge">Battery</div>
+                <div class="category-badge">Glass</div>
+                <div class="category-badge">Light Bulbs</div>
+                <div class="category-badge">Metal</div>
+                <div class="category-badge">Organic</div>
+                <div class="category-badge">Paper</div>
+                <div class="category-badge">Plastic</div>
+            </div>
+        </section>
+
+        <!-- Meet the Developers -->
+        <section class="about-section">
+            <h2>Meet the Developers</h2>
+            <div class="developers-grid">
+                <div class="developer-card">
+                    <div class="developer-image">
+                        <img src="{% static 'images/y.jpeg' %}" alt="Developer 1"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%234CAF50%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2260%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22%3ED1%3C/text%3E%3C/svg%3E'">
+                    </div>
+                    <h3>Yangchen Dema</h3>
+                    <p class="developer-role">Full Stack Developer & UI/UX Designer</p>
+                    <p class="developer-bio">
+                        Passionate Full Stack Developer & UI/UX Designer focused on building functional, intuitive, and visually appealing web applications.
+                    </p>
+                    <div class="developer-skills">
+                        <span>Python</span>
+                        <span>TensorFlow</span>
+                        <span>Django</span>
+                    </div>
+                </div>
+
+                <div class="developer-card">
+                    <div class="developer-image">
+                        <img src="{% static 'images/dppp.jpeg' %}" alt="Developer 2"
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%232196F3%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2260%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22%3ED2%3C/text%3E%3C/svg%3E'">
+                    </div>
+                    <h3>Dechen Peldon</h3>
+                    <p class="developer-role">Lead Developer & ML Engineer</p>
+                    <p class="developer-bio">
+                        Specializes in computer vision and deep learning. Responsible for model training and optimization.
+                    </p>
+                    <div class="developer-skills">
+                        <span>JavaScript</span>
+                        <span>CSS3</span>
+                        <span>UI/UX</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Environmental Impact -->
+       
+        <!-- Call to Action -->
+        
+    </div>
+</div>
+{% endblock %}

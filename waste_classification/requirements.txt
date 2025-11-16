@@ -1,0 +1,7 @@
+Django==4.2.7
+# allow newer Pillow wheels (helps on newer Python versions)
+Pillow>=10.1.0,<11.0.0
+tensorflow==2.15.0
+numpy==1.24.3
+opencv-python==4.8.1.78
+keras==2.15.0
